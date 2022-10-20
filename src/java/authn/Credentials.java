@@ -13,7 +13,7 @@ public class Credentials implements Serializable {
     @SequenceGenerator(name="Credentials_Gen", allocationSize=1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Credentials_Gen") 
     private Long id;
-    @Column(unique=true)
+    //@Column(unique=true)
     @NotNull(message="Username can't be null")
     private String username;
     @NotNull(message="Password can't be null")

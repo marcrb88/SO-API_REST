@@ -1,20 +1,40 @@
 package model.entities;
 
+import jakarta.persistence.Column;
 import java.util.ArrayList;
 import java.util.Collection;
-import javax.persistence.*;
+import java.io.Serializable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.validation.constraints.NotNull;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @Entity
-@Table(name = "CLIENT")
-public class Client implements java.io.Serializable {
-
+@XmlRootElement
+public class Client implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name="Client_Gen", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Client_Gen")
     private int id;
 
+    @NotNull(message="Username can't be null")
     private String name;
+    
+    //@Column(unique=true)
+    @NotNull(message="Email can't be null")
     private String email;
+    
+    @NotNull(message="Password can't be null")
     private String password;
+    
+    //@Column(unique=true)
     private String phone;
 
     @OneToMany(mappedBy="client")

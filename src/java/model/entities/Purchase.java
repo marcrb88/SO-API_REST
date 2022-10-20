@@ -1,22 +1,38 @@
 package model.entities;
 
+import java.io.Serializable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.validation.constraints.NotNull;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
-import javax.persistence.*;
 
 @Entity
-@Table(name = "PURCHASE")
-public class Purchase implements java.io.Serializable {
+@XmlRootElement
+public class Purchase implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name="Purchase_Gen", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Purchase_Gen")
     private int id;
 
+    @NotNull(message="Date can't be null")
     private Date datePurchase;
+    
+    @NotNull(message="Amount can't be null")
     private float amount;
     
+    @NotNull(message="Client can't be null")
     @ManyToOne
     private Client client;
     
+    @NotNull(message="Coin can't be null")
     @OneToOne
     private Coin coin;
     

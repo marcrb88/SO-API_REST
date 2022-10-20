@@ -1,20 +1,38 @@
 package model.entities;
 
+import jakarta.persistence.Column;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.io.Serializable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.validation.constraints.NotNull;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
-import javax.persistence.*;
 
 @Entity
-@Table(name = "COIN")
-public class Coin implements java.io.Serializable {
+@XmlRootElement
+public class Coin implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name="Coin_Gen", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Coin_Gen")
     private int id;
 
+    //@Column(unique=true)
+    @NotNull(message="Coin name can't be null")
     private String name;
+    
     private String description;
-    private double lastQuote;
+    
+    private float lastQuote;
+    
     private Date lastQuoteTime;
 
     @ManyToMany
@@ -24,14 +42,14 @@ public class Coin implements java.io.Serializable {
     public Purchase purchase;
     
     public Coin(){
-        
     }
 
-    public Coin(String name, String description, double lastQuote, Date lastQuoteTime) {
+    public Coin(String name, String description, float lastQuote, Date lastQuoteTime) {
         this.name = name;
         this.description = description;
         this.lastQuote = lastQuote;
         this.lastQuoteTime = lastQuoteTime;
+        this.clients = new ArrayList<>();
     }
 
     public int getId() {
@@ -58,11 +76,11 @@ public class Coin implements java.io.Serializable {
         this.description = description;
     }
 
-    public double getLastQuote() {
+    public float getLastQuote() {
         return lastQuote;
     }
 
-    public void setLastQuote(double lastQuote) {
+    public void setLastQuote(float lastQuote) {
         this.lastQuote = lastQuote;
     }
 
