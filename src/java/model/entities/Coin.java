@@ -39,7 +39,7 @@ public class Coin implements Serializable {
     private Collection<Client> clients;
     
     @OneToOne(mappedBy="coin")
-    public Purchase purchase;
+    private Purchase purchase;
     
     public Coin(){
     }
@@ -90,14 +90,6 @@ public class Coin implements Serializable {
 
     public void setLastQuoteTime(Date lastQuoteTime) {
         this.lastQuoteTime = lastQuoteTime;
-    }
-
-    public Purchase getPurchase() {
-        return purchase;
-    }
-
-    public void setPurchase(Purchase purchase) {
-        this.purchase = purchase;
     }
     
     public void addClients(Client client){

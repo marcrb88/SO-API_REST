@@ -42,7 +42,7 @@
                 "INSERT INTO " + schema + ".CREDENTIALS VALUES (NEXT VALUE FOR CREDENTIALS_GEN, 'sob', 'sob')",
                 "INSERT INTO " + schema + ".CLIENT VALUES (NEXT VALUE FOR CLIENT_GEN, 'Marc', 'correu@gmail.com', '1234', '666123456')",
                 "INSERT INTO " + schema + ".COIN VALUES (NEXT VALUE FOR COIN_GEN, 'ta weno', 17000.0, '2014-07-02 06:14:00.742000000', 'etherium')",
-                "INSERT INTO " + schema + ".PURCHASE VALUES (NEXT VALUE FOR PURCHASE_GEN, 1000.0, '2014-07-02 06:14:00.742000000', 1, 1)",
+                "INSERT INTO " + schema + ".PURCHASE VALUES (NEXT VALUE FOR PURCHASE_GEN, 1000.0, '2014-07-02 06:14:00.742000000', 1, 1)"
             };
             for (String datum : data) {
                 if (stmt.executeUpdate(datum)<=0) {
