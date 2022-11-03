@@ -15,7 +15,9 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import model.entities.Coin;
 import authn.Secured;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
+import java.util.ArrayList;
 
 @Stateless
 @Path("coin")
@@ -49,18 +51,20 @@ public class CoinFacadeREST extends AbstractFacade<Coin> {
     }
 
     @GET
-    @Secured
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response find(@PathParam("id") Long id) {
+    public Response find(@PathParam("id") Integer id) {
         return Response.ok().entity(super.find(id)).build();
     }
+   
 
     @GET
-    @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Coin> findAll() {
-        return super.findAll();
+    public Response findAll(@QueryParam("order") String order) {
+        if (order == null){
+            return Response.ok().entity(super.findAll()).build();
+        }
+        return Response.ok().entity(getEntityManager().createQuery("SELECT c FROM Coin c ORDER BY c.lastQuote " + order).getResultList()).build();
     }
 
     @GET
