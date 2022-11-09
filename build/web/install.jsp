@@ -40,10 +40,10 @@
                 "INSERT INTO " + schema + ".COMMENT VALUES (NEXT VALUE FOR COMMENT_GEN, 'Skeleton code', 1)",
                 "INSERT INTO " + schema + ".COMMENT VALUES (NEXT VALUE FOR COMMENT_GEN, 'for homework1', 1)",
                 "INSERT INTO " + schema + ".CREDENTIALS VALUES (NEXT VALUE FOR CREDENTIALS_GEN, 'sob', 'sob')",
-                "INSERT INTO " + schema + ".CLIENT VALUES (NEXT VALUE FOR CLIENT_GEN, 'correu@gmail.com', 'Marc', '1234', '666123456')",
-                "INSERT INTO " + schema + ".COIN VALUES (NEXT VALUE FOR COIN_GEN, 'ta weno', 17000.0, '2014-07-02 06:14:00.742000000', 'etherium')",
-                "INSERT INTO " + schema + ".COIN VALUES (NEXT VALUE FOR COIN_GEN, 'ta weno', 20000.0, '2014-07-02 06:14:00.742000000', 'bitcoin')",
-                "INSERT INTO " + schema + ".PURCHASE VALUES (NEXT VALUE FOR PURCHASE_GEN, 1000.0, '2014-07-02 06:14:00.742000000', 1, 1)"
+                "INSERT INTO " + schema + ".CUSTOMER VALUES (NEXT VALUE FOR CUSTOMER_GEN, 'correu@gmail.com', 'Marc', '1234', '666123456')",
+                "INSERT INTO " + schema + ".CRYPTOCURRENCY VALUES (NEXT VALUE FOR CRYPTOCURRENCY_GEN, 'ta weno', 17000.0, '2014-07-02 06:14:00.742000000', 'etherium')",
+                "INSERT INTO " + schema + ".CRYPTOCURRENCY VALUES (NEXT VALUE FOR CRYPTOCURRENCY_GEN, 'ta weno', 20000.0, '2014-07-02 06:14:00.742000000', 'bitcoin')",
+                "INSERT INTO " + schema + ".PURCHASE VALUES (NEXT VALUE FOR ORDER_GEN, 1000.0, '2014-07-02 06:14:00.742000000', 1, 1)"
             };
             for (String datum : data) {
                 if (stmt.executeUpdate(datum)<=0) {
