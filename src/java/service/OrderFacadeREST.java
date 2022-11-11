@@ -15,7 +15,11 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import model.entities.Order;
 import authn.Secured;
+import jakarta.ws.rs.CookieParam;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
+import model.entities.Cryptocurrency;
+import model.entities.Customer;
 
 @Stateless
 @Path("order")
@@ -29,10 +33,15 @@ public class OrderFacadeREST extends AbstractFacade<Order> {
     }
 
     @POST
-    @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Order entity) {
+    public Response create(@QueryParam("cryptocurrency") int id_cryptocurency, Order entity, @CookieParam("token") int id_customer) {
+        Customer c = (Customer) em.createQuery("SELECT c FROM Customer c WHERE c.id = " + id_customer).getSingleResult();
+        Cryptocurrency c2 = (Cryptocurrency) em.createQuery("SELECT c FROM Cryptocurrency c WHERE c.id = " + id_cryptocurency).getSingleResult();
+        entity.setCustomer(c);
+        entity.setCryptocurrency(c2);
         super.create(entity);
+        float preu = entity.getAmount() * c2.getLastQuote();
+        return Response.ok().entity("<html><body><h1>" + preu + "</h1></body></html>").build();
     }
 
     @PUT
