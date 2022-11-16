@@ -58,10 +58,10 @@ public class OrderFacadeREST extends AbstractFacade<Order> {
     }
 
     @GET
-    @Secured
+    //@Secured
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response find(@PathParam("id") Long id) {
+    public Response find(@PathParam("id") Integer id) {
         return Response.ok().entity(super.find(id)).build();
     }
 

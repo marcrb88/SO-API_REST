@@ -41,6 +41,7 @@
                 "INSERT INTO " + schema + ".COMMENT VALUES (NEXT VALUE FOR COMMENT_GEN, 'for homework1', 1)",
                 "INSERT INTO " + schema + ".CREDENTIALS VALUES (NEXT VALUE FOR CREDENTIALS_GEN, 'sob', 'sob')",
                 "INSERT INTO " + schema + ".CUSTOMER VALUES (NEXT VALUE FOR CUSTOMER_GEN, 'correu@gmail.com', 'Marc', '1234', '666123456')",
+                "INSERT INTO " + schema + ".CUSTOMER VALUES (NEXT VALUE FOR CUSTOMER_GEN, 'marc.roige@estudiants.urv.cat', 'MarcNObb', '1234', '666123456')",
                 "INSERT INTO " + schema + ".CRYPTOCURRENCY VALUES (NEXT VALUE FOR CRYPTOCURRENCY_GEN, 'ta weno', 17000.0, '2014-07-02 06:14:00.742000000', 'etherium')",
                 "INSERT INTO " + schema + ".CRYPTOCURRENCY VALUES (NEXT VALUE FOR CRYPTOCURRENCY_GEN, 'ta weno', 20000.0, '2014-07-02 06:14:00.742000000', 'bitcoin')",
                 "INSERT INTO " + schema + ".PURCHASE VALUES (NEXT VALUE FOR ORDER_GEN, 1000.0, '2014-07-02 06:14:00.742000000', 1, 1)"

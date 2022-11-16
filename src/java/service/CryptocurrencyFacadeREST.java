@@ -51,7 +51,7 @@ public class CryptocurrencyFacadeREST extends AbstractFacade<Cryptocurrency> {
     }
 
     @GET
-    @Secured
+    //@Secured
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response find(@PathParam("id") Integer id) {

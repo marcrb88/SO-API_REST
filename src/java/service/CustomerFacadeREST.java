@@ -16,11 +16,14 @@ import jakarta.ws.rs.core.MediaType;
 import model.entities.Customer;
 import authn.Secured;
 import jakarta.ws.rs.core.Response;
+import model.entities.Order;
+import jakarta.ws.rs.core.GenericEntity;
+import java.util.Collection;
 
 @Stateless
 @Path("customer")
 public class CustomerFacadeREST extends AbstractFacade<Customer> {
-
+    
     @PersistenceContext(unitName = "Homework1PU")
     private EntityManager em;
 
@@ -38,7 +41,7 @@ public class CustomerFacadeREST extends AbstractFacade<Customer> {
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Long id, Customer entity) {
+    public void edit(@PathParam("id") Integer id, Customer entity) {
         super.edit(entity);
     }
 
@@ -49,18 +52,21 @@ public class CustomerFacadeREST extends AbstractFacade<Customer> {
     }
 
     @GET
-    @Secured
+    //@Secured
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response find(@PathParam("id") Long id) {
-        return Response.ok().entity(super.find(id)).build();
+    public Response find(@PathParam("id") Integer id) {
+        //List<Customer> c = em.createQuery("SELECT c.id, c.name, c.email, c.phone FROM Customer c WHERE c.id = :id").setParameter("id", id).getResultList();
+        List<Customer> c = em.createQuery("SELECT c FROM Customer c WHERE c.id = :id").setParameter("id", id).getResultList();
+        return Response.ok().entity(c).build();
     }
 
     @GET
-    @Override
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Customer> findAll() {
-        return super.findAll();
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response findAllWithoutPasswd() {
+        List<Customer> c = em.createQuery("SELECT c FROM Customer c").getResultList();
+        //GenericEntity<List<Customer>> c2 = new GenericEntity<List<Customer>>(c){};
+        return Response.ok().entity(c).build();
     }
 
     @GET
