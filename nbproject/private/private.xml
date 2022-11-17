@@ -3,14 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/marcr/OneDrive/Documentos/SO-API_REST/src/java/model/entities/Customer.java</file>
-            <file>file:/C:/Users/marcr/OneDrive/Documentos/SO-API_REST/src/java/service/AbstractFacade.java</file>
-            <file>file:/C:/Users/marcr/OneDrive/Documentos/SO-API_REST/src/java/service/OrderFacadeREST.java</file>
-            <file>file:/C:/Users/marcr/OneDrive/Documentos/SO-API_REST/web/install.jsp</file>
-            <file>file:/C:/Users/marcr/OneDrive/Documentos/SO-API_REST/src/java/model/entities/Order.java</file>
-            <file>file:/C:/Users/marcr/OneDrive/Documentos/SO-API_REST/src/java/service/CryptocurrencyFacadeREST.java</file>
-            <file>file:/C:/Users/marcr/OneDrive/Documentos/SO-API_REST/src/java/service/CustomerFacadeREST.java</file>
-            <file>file:/C:/Users/marcr/OneDrive/Documentos/SO-API_REST/src/java/model/entities/Cryptocurrency.java</file>
+            <file>file:/C:/SO-API_REST/src/java/model/entities/Order.java</file>
+            <file>file:/C:/SO-API_REST/src/java/service/CustomerFacadeREST.java</file>
+            <file>file:/C:/SO-API_REST/src/java/model/entities/Customer.java</file>
+            <file>file:/C:/SO-API_REST/web/install.jsp</file>
         </group>
     </open-files>
 </project-private>
