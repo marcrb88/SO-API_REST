@@ -56,17 +56,16 @@ public class CustomerFacadeREST extends AbstractFacade<Customer> {
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response find(@PathParam("id") Integer id) {
-        //List<Customer> c = em.createQuery("SELECT c.id, c.name, c.email, c.phone FROM Customer c WHERE c.id = :id").setParameter("id", id).getResultList();
-        List<Customer> c = em.createQuery("SELECT c FROM Customer c WHERE c.id = :id").setParameter("id", id).getResultList();
+        List c = em.createQuery("SELECT c FROM Customer c WHERE c.id = :id").setParameter("id", id).getResultList();
         return Response.ok().entity(c).build();
     }
 
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public Response findAllWithoutPasswd() {
-        List<Customer> c = em.createQuery("SELECT c FROM Customer c").getResultList();
-        //GenericEntity<List<Customer>> c2 = new GenericEntity<List<Customer>>(c){};
-        return Response.ok().entity(c).build();
+    @Override
+    public List findAll() {
+        List c = em.createQuery("SELECT c.id, c.email, c.name, c.phone FROM Customer c").getResultList();
+        return c;
     }
 
     @GET
