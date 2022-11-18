@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -14,6 +15,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 
 @Entity
+@NamedQuery(name = "Order.createCust", query = "SELECT c FROM Customer c WHERE c.id = :id_customer")
+@NamedQuery(name = "Order.createCrypto", query = "SELECT c FROM Cryptocurrency c WHERE c.id = :id_cryptocurrency")
 @XmlRootElement
 @Table(name="PURCHASE")
 public class Order implements Serializable {

@@ -15,6 +15,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import model.entities.Customer;
 import authn.Secured;
+import jakarta.persistence.NamedQuery;
 import jakarta.ws.rs.core.Response;
 import model.entities.Order;
 import jakarta.ws.rs.core.GenericEntity;
@@ -51,20 +52,21 @@ public class CustomerFacadeREST extends AbstractFacade<Customer> {
         super.remove(super.find(id));
     }
 
+    
     @GET
     //@Secured
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response find(@PathParam("id") Integer id) {
-        List c = em.createQuery("SELECT c FROM Customer c WHERE c.id = :id").setParameter("id", id).getResultList();
+        List c = em.createNamedQuery("Customer.find").setParameter("id", id).getResultList();
         return Response.ok().entity(c).build();
     }
 
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     @Override
-    public List findAll() {
-        List c = em.createQuery("SELECT c.id, c.email, c.name, c.phone FROM Customer c").getResultList();
+    public List <Customer> findAll() {
+        List <Customer> c = em.createNamedQuery("Customer.findAll").getResultList();
         return c;
     }
 

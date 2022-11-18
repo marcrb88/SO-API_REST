@@ -8,12 +8,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @Entity
+@NamedQuery(name = "Customer.find", query = "SELECT c.id, c.email, c.name, c.phone FROM Customer c WHERE c.id = :id")
+@NamedQuery (name = "Customer.findAll", query = "SELECT c.id, c.email, c.name, c.phone FROM Customer c")
 @XmlRootElement
 public class Customer implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -41,7 +44,7 @@ public class Customer implements Serializable {
     
     @ManyToMany(mappedBy="customers")
     final private Collection<Cryptocurrency> cryptocurrencies;
-
+    
     public Customer() {
         this.orders = new ArrayList<>();
         this.cryptocurrencies = new ArrayList<>();

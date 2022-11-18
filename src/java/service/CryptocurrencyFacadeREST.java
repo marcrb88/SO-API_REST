@@ -66,7 +66,7 @@ public class CryptocurrencyFacadeREST extends AbstractFacade<Cryptocurrency> {
             order = "desc";
         }
         if (order.equalsIgnoreCase("asc") || order.equalsIgnoreCase("desc")){
-            List<Cryptocurrency> c = em.createQuery("SELECT c FROM Cryptocurrency c ORDER BY c.lastQuote " + order).getResultList();
+            List<Cryptocurrency> c = em.createNamedQuery("Cryptocurrency.findAll").setParameter("order", order).getResultList();
             final GenericEntity<List<Cryptocurrency>> c2 = new GenericEntity<List<Cryptocurrency>>(c) {};
             return Response.ok().entity(c2).build();
         }

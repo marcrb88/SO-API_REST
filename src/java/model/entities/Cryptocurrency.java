@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.validation.constraints.NotNull;
@@ -14,6 +15,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 
 @Entity
+@NamedQuery(name = "Cryptocurrency.findAll", query = "SELECT c FROM Cryptocurrency c ORDER BY c.lastQuote :order")
 @XmlRootElement
 public class Cryptocurrency implements Serializable {
     private static final long serialVersionUID = 1L;

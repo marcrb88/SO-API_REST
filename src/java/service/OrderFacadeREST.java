@@ -34,9 +34,9 @@ public class OrderFacadeREST extends AbstractFacade<Order> {
 
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response create(@QueryParam("cryptocurrency") int id_cryptocurency, Order entity, @CookieParam("token") int id_customer) {
-        Customer c = (Customer) em.createQuery("SELECT c FROM Customer c WHERE c.id = " + id_customer).getSingleResult();
-        Cryptocurrency c2 = (Cryptocurrency) em.createQuery("SELECT c FROM Cryptocurrency c WHERE c.id = " + id_cryptocurency).getSingleResult();
+    public Response create(@QueryParam("cryptocurrency") int id_cryptocurrency, Order entity, @CookieParam("token") int id_customer) {
+        Customer c = (Customer) em.createNamedQuery("Order.createCust").setParameter("id_customer", id_customer).getSingleResult();
+        Cryptocurrency c2 = (Cryptocurrency) em.createNamedQuery("Order.createCrypto").setParameter("id_cryptocurrency", id_cryptocurrency).getSingleResult();
         entity.setCustomer(c);
         entity.setCryptocurrency(c2);
         super.create(entity);
