@@ -14,10 +14,11 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import model.entities.Cryptocurrency;
-import authn.Secured;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.GenericEntity;
 import jakarta.ws.rs.core.Response;
+import model.entities.Customer;
+import model.entities.Order;
 
 @Stateless
 @Path("cryptocurrency")
@@ -51,26 +52,39 @@ public class CryptocurrencyFacadeREST extends AbstractFacade<Cryptocurrency> {
     }
 
     @GET
-    //@Secured
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response find(@PathParam("id") Integer id) {
-        return Response.ok().entity(super.find(id)).build();
+        List<Order> orders = (List<Order>) em.createNamedQuery("Order.findCryptocurrency")
+                .setParameter("cryptocurrency_id", id)
+                .getResultList();
+        Order order = orders.get(orders.size()-1);
+        
+        Customer customer = order.getCustomer();
+        Customer customerWithoutPasswd = new Customer(customer.getId(), customer.getName(), customer.getEmail(), customer.getPhone());
+        Order orderWithoutPasswd = new Order(order.getId(), order.getDatePurchase(), order.getAmount(), customerWithoutPasswd, order.getCryptocurrency());
+        
+        return Response.ok().entity(orderWithoutPasswd).build();
     }
    
 
     @GET
-    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response findAll(@QueryParam("order") String order) {
         if (order == null){
             order = "desc";
         }
         if (order.equalsIgnoreCase("asc") || order.equalsIgnoreCase("desc")){
-            List<Cryptocurrency> c = em.createNamedQuery("Cryptocurrency.findAll").setParameter("order", order).getResultList();
-            final GenericEntity<List<Cryptocurrency>> c2 = new GenericEntity<List<Cryptocurrency>>(c) {};
-            return Response.ok().entity(c2).build();
+            List<Cryptocurrency> cryptocurrencies;
+            if (order.equalsIgnoreCase("asc")){
+                cryptocurrencies = em.createNamedQuery("Cryptocurrency.findAllASC").getResultList();
+            } else {
+                cryptocurrencies = em.createNamedQuery("Cryptocurrency.findAllDESC").getResultList();
+            }
+            final GenericEntity<List<Cryptocurrency>> gCryptocurrencies = new GenericEntity<List<Cryptocurrency>>(cryptocurrencies) {};
+            return Response.ok().entity(gCryptocurrencies).build();
         }
-        return Response.status(Response.Status.BAD_REQUEST).entity("<html><body><h1>El valor del parametre order es invalid</h1></body></html>").build();
+        return Response.status(Response.Status.BAD_REQUEST).entity("El valor del parametre order es invalid").build();
     }
 
     @GET

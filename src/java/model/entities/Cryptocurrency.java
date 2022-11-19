@@ -6,16 +6,21 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Column;
 import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 
 @Entity
-@NamedQuery(name = "Cryptocurrency.findAll", query = "SELECT c FROM Cryptocurrency c ORDER BY c.lastQuote :order")
+@NamedQuery(name = "Cryptocurrency.find",
+        query = "SELECT c FROM Cryptocurrency c WHERE c.id = :id_cryptocurrency")
+@NamedQuery(name = "Cryptocurrency.findAllASC",
+        query = "SELECT c FROM Cryptocurrency c ORDER BY c.lastQuote ASC")
+@NamedQuery(name = "Cryptocurrency.findAllDESC",
+        query = "SELECT c FROM Cryptocurrency c ORDER BY c.lastQuote DESC")
 @XmlRootElement
 public class Cryptocurrency implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -31,15 +36,15 @@ public class Cryptocurrency implements Serializable {
     
     private String description;
     
+    @NotNull(message="Coin last quote can't be null")
     private float lastQuote;
     
+    @NotNull(message="Coin last quote time can't be null")
     private Date lastQuoteTime;
-
-    @ManyToMany
-    private Collection<Customer> customers;
     
-    @OneToOne(mappedBy="cryptocurrency")
-    private Order order;
+    @OneToMany(mappedBy="cryptocurrency")
+    private Collection<Order> orders;
+    
     
     public Cryptocurrency() {}
 

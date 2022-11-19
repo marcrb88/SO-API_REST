@@ -7,7 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Column;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
@@ -15,8 +15,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @Entity
-@NamedQuery(name = "Customer.find", query = "SELECT c.id, c.email, c.name, c.phone FROM Customer c WHERE c.id = :id")
-@NamedQuery (name = "Customer.findAll", query = "SELECT c.id, c.email, c.name, c.phone FROM Customer c")
+@NamedQuery(name = "Customer.findCustomerbyCredentials",
+        query = "SELECT c FROM Customer c WHERE c.name = :cust_name AND c.password = :cust_password")
 @XmlRootElement
 public class Customer implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -40,14 +40,17 @@ public class Customer implements Serializable {
     private String phone;
 
     @OneToMany(mappedBy="customer")
-    final private Collection<Order> orders;
+    private Collection<Order> orders;
     
-    @ManyToMany(mappedBy="customers")
-    final private Collection<Cryptocurrency> cryptocurrencies;
     
-    public Customer() {
-        this.orders = new ArrayList<>();
-        this.cryptocurrencies = new ArrayList<>();
+    public Customer() {}
+    
+    public Customer(int id, String name, String email, String phone) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = "*******";
+        this.phone = phone;
     }
 
     public int getId() {

@@ -1,5 +1,6 @@
 package service;
 
+import authn.Credentials;
 import java.util.List;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -15,11 +16,9 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import model.entities.Customer;
 import authn.Secured;
-import jakarta.persistence.NamedQuery;
 import jakarta.ws.rs.core.Response;
-import model.entities.Order;
 import jakarta.ws.rs.core.GenericEntity;
-import java.util.Collection;
+import java.util.ArrayList;
 
 @Stateless
 @Path("customer")
@@ -36,13 +35,19 @@ public class CustomerFacadeREST extends AbstractFacade<Customer> {
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Customer entity) {
+        Credentials credentials = new Credentials();
+        credentials.setUsername(entity.getEmail());
+        credentials.setPassword(entity.getPassword());
+        em.persist(credentials);
         super.create(entity);
     }
 
     @PUT
+    @Secured
     @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public void edit(@PathParam("id") Integer id, Customer entity) {
+        entity.setId(id);
         super.edit(entity);
     }
 
@@ -54,20 +59,29 @@ public class CustomerFacadeREST extends AbstractFacade<Customer> {
 
     
     @GET
-    //@Secured
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response find(@PathParam("id") Integer id) {
-        List c = em.createNamedQuery("Customer.find").setParameter("id", id).getResultList();
-        return Response.ok().entity(c).build();
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response findWithoutPasswd(@PathParam("id") Integer id) {
+        Customer customer = super.find(id);
+        
+        Customer customerWithoutPasswd = new Customer(customer.getId(), customer.getName(), customer.getEmail(), customer.getPhone());
+        
+        return Response.ok().entity(customerWithoutPasswd).build();
     }
 
     @GET
-    @Produces({MediaType.APPLICATION_JSON})
-    @Override
-    public List <Customer> findAll() {
-        List <Customer> c = em.createNamedQuery("Customer.findAll").getResultList();
-        return c;
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response findAllWithoutPasswd() {
+        List<Customer> customers = super.findAll();
+        
+        List<Customer> customersWithoutPasswd = new ArrayList();
+        Customer customerWithoutPasswd;
+        for (Customer customer : customers) {
+            customerWithoutPasswd = new Customer(customer.getId(), customer.getName(), customer.getEmail(), customer.getPhone());
+            customersWithoutPasswd.add(customerWithoutPasswd);
+        }
+        final GenericEntity<List<Customer>> gCustomers = new GenericEntity<List<Customer>>(customersWithoutPasswd) {};
+        return Response.ok().entity(gCustomers).build();
     }
 
     @GET

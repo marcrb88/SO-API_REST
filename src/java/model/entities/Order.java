@@ -7,7 +7,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -15,8 +14,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 
 @Entity
-@NamedQuery(name = "Order.createCust", query = "SELECT c FROM Customer c WHERE c.id = :id_customer")
-@NamedQuery(name = "Order.createCrypto", query = "SELECT c FROM Cryptocurrency c WHERE c.id = :id_cryptocurrency")
+@NamedQuery(name = "Order.findCryptocurrency",
+        query = "SELECT o FROM Order o WHERE o.cryptocurrency.id = :cryptocurrency_id")
 @XmlRootElement
 @Table(name="PURCHASE")
 public class Order implements Serializable {
@@ -38,11 +37,18 @@ public class Order implements Serializable {
     private Customer customer;
     
     @NotNull(message="Coin can't be null")
-    @OneToOne
+    @ManyToOne
     private Cryptocurrency cryptocurrency;
     
     
-    public Order() {
+    public Order() {}
+
+    public Order(int id, Date datePurchase, float amount, Customer customer, Cryptocurrency cryptocurrency) {
+        this.id = id;
+        this.datePurchase = datePurchase;
+        this.amount = amount;
+        this.customer = customer;
+        this.cryptocurrency = cryptocurrency;
     }
 
     public int getId() {

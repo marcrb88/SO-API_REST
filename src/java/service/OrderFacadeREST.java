@@ -15,9 +15,12 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import model.entities.Order;
 import authn.Secured;
-import jakarta.ws.rs.CookieParam;
+import com.sun.xml.messaging.saaj.util.Base64;
+import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
+import java.util.Date;
+import java.util.StringTokenizer;
 import model.entities.Cryptocurrency;
 import model.entities.Customer;
 
@@ -33,15 +36,31 @@ public class OrderFacadeREST extends AbstractFacade<Order> {
     }
 
     @POST
+    @Secured
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response create(@QueryParam("cryptocurrency") int id_cryptocurrency, Order entity, @CookieParam("token") int id_customer) {
-        Customer c = (Customer) em.createNamedQuery("Order.createCust").setParameter("id_customer", id_customer).getSingleResult();
-        Cryptocurrency c2 = (Cryptocurrency) em.createNamedQuery("Order.createCrypto").setParameter("id_cryptocurrency", id_cryptocurrency).getSingleResult();
-        entity.setCustomer(c);
-        entity.setCryptocurrency(c2);
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response create(@QueryParam("cryptocurrency") int id_cryptocurrency, Order entity, @HeaderParam("Authorization") String credentials) {
+        String decode = Base64.base64Decode(credentials.replace("Basic ", ""));
+        StringTokenizer tokenizer = new StringTokenizer(decode, ":");
+        String username = tokenizer.nextToken();
+        String password = tokenizer.nextToken();
+        
+        Customer customer = (Customer) em.createNamedQuery("Customer.findCustomerbyCredentials")
+                .setParameter("cust_name", username)
+                .setParameter("cust_password", password)
+                .getSingleResult();
+        Cryptocurrency cryptocurrency = (Cryptocurrency) em.createNamedQuery("Cryptocurrency.find")
+                .setParameter("id_cryptocurrency", id_cryptocurrency)
+                .getSingleResult();
+        
+        entity.setCustomer(customer);
+        entity.setCryptocurrency(cryptocurrency);
+        entity.setDatePurchase(new Date());
+        
         super.create(entity);
-        float preu = entity.getAmount() * c2.getLastQuote();
-        return Response.ok().entity("<html><body><h1>" + preu + "</h1></body></html>").build();
+        
+        float preu = entity.getAmount() * cryptocurrency.getLastQuote();
+        return Response.ok().entity("Comanda amb id " + entity.getId() + " amb preu " + preu + " amb data " + entity.getDatePurchase()).build();
     }
 
     @PUT
@@ -58,11 +77,17 @@ public class OrderFacadeREST extends AbstractFacade<Order> {
     }
 
     @GET
-    //@Secured
+    @Secured
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response find(@PathParam("id") Integer id) {
-        return Response.ok().entity(super.find(id)).build();
+        Order order = super.find(id);
+        
+        Customer customer = order.getCustomer();
+        Customer customerWithoutPasswd = new Customer(customer.getId(), customer.getName(), customer.getEmail(), customer.getPhone());
+        Order orderWithoutPasswd = new Order(order.getId(), order.getDatePurchase(), order.getAmount(), customerWithoutPasswd, order.getCryptocurrency());
+        
+        return Response.ok().entity(orderWithoutPasswd).build();
     }
 
     @GET
