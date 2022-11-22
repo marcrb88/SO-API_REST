@@ -1,6 +1,5 @@
 package service;
 
-import authn.Credentials;
 import java.util.List;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -35,10 +34,6 @@ public class CustomerFacadeREST extends AbstractFacade<Customer> {
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Customer entity) {
-        Credentials credentials = new Credentials();
-        credentials.setUsername(entity.getEmail());
-        credentials.setPassword(entity.getPassword());
-        em.persist(credentials);
         super.create(entity);
     }
 

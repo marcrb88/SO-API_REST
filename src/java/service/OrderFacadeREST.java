@@ -43,11 +43,9 @@ public class OrderFacadeREST extends AbstractFacade<Order> {
         String decode = Base64.base64Decode(credentials.replace("Basic ", ""));
         StringTokenizer tokenizer = new StringTokenizer(decode, ":");
         String username = tokenizer.nextToken();
-        String password = tokenizer.nextToken();
         
-        Customer customer = (Customer) em.createNamedQuery("Customer.findCustomerbyCredentials")
-                .setParameter("cust_name", username)
-                .setParameter("cust_password", password)
+        Customer customer = (Customer) em.createNamedQuery("Customer.findCustomer")
+                .setParameter("username", username)
                 .getSingleResult();
         Cryptocurrency cryptocurrency = (Cryptocurrency) em.createNamedQuery("Cryptocurrency.find")
                 .setParameter("id_cryptocurrency", id_cryptocurrency)

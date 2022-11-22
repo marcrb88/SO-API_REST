@@ -1,6 +1,5 @@
 package model.entities;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.io.Serializable;
 import jakarta.persistence.Entity;
@@ -15,8 +14,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @Entity
-@NamedQuery(name = "Customer.findCustomerbyCredentials",
-        query = "SELECT c FROM Customer c WHERE c.name = :cust_name AND c.password = :cust_password")
+@NamedQuery(name = "Customer.findCustomer",
+        query = "SELECT c FROM Customer c WHERE c.email = :username")
 @XmlRootElement
 public class Customer implements Serializable {
     private static final long serialVersionUID = 1L;
