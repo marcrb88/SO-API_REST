@@ -14,7 +14,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 
 @Entity
-@NamedQuery(name = "Order.findCryptocurrency",
+@NamedQuery(name = "Order.findByCryptocurrency",
         query = "SELECT o FROM Order o WHERE o.cryptocurrency.id = :cryptocurrency_id")
 @XmlRootElement
 @Table(name="PURCHASE")

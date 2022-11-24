@@ -17,7 +17,6 @@ import model.entities.Cryptocurrency;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.GenericEntity;
 import jakarta.ws.rs.core.Response;
-import model.entities.Customer;
 import model.entities.Order;
 
 @Stateless
@@ -55,16 +54,12 @@ public class CryptocurrencyFacadeREST extends AbstractFacade<Cryptocurrency> {
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response find(@PathParam("id") Integer id) {
-        List<Order> orders = (List<Order>) em.createNamedQuery("Order.findCryptocurrency")
+        List<Order> orders = (List<Order>) em.createNamedQuery("Order.findByCryptocurrency")
                 .setParameter("cryptocurrency_id", id)
                 .getResultList();
         Order order = orders.get(orders.size()-1);
         
-        Customer customer = order.getCustomer();
-        Customer customerWithoutPasswd = new Customer(customer.getId(), customer.getName(), customer.getEmail(), customer.getPhone());
-        Order orderWithoutPasswd = new Order(order.getId(), order.getDatePurchase(), order.getAmount(), customerWithoutPasswd, order.getCryptocurrency());
-        
-        return Response.ok().entity(orderWithoutPasswd).build();
+        return Response.ok().entity(order).build();
     }
    
 

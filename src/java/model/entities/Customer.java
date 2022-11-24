@@ -1,5 +1,6 @@
 package model.entities;
 
+import authn.Credentials;
 import java.util.Collection;
 import java.io.Serializable;
 import jakarta.persistence.Entity;
@@ -9,12 +10,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @Entity
-@NamedQuery(name = "Customer.findCustomer",
+@NamedQuery(name = "Customer.findByUsername",
         query = "SELECT c FROM Customer c WHERE c.email = :username")
 @XmlRootElement
 public class Customer implements Serializable {
@@ -28,14 +30,14 @@ public class Customer implements Serializable {
     @NotNull(message="Username can't be null")
     private String name;
     
-    //@Column(unique=true)
+    @Column(unique=true)
     @NotNull(message="Email can't be null")
     private String email;
     
-    @NotNull(message="Password can't be null")
-    private String password;
+    @OneToOne(mappedBy="customer")
+    private Credentials password;
     
-    //@Column(unique=true)
+    @Column(unique=true)
     private String phone;
 
     @OneToMany(mappedBy="customer")
@@ -43,14 +45,6 @@ public class Customer implements Serializable {
     
     
     public Customer() {}
-    
-    public Customer(int id, String name, String email, String phone) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.password = "*******";
-        this.phone = phone;
-    }
 
     public int getId() {
         return id;
@@ -74,14 +68,6 @@ public class Customer implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getPhone() {

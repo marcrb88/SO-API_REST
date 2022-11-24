@@ -44,7 +44,7 @@ public class OrderFacadeREST extends AbstractFacade<Order> {
         StringTokenizer tokenizer = new StringTokenizer(decode, ":");
         String username = tokenizer.nextToken();
         
-        Customer customer = (Customer) em.createNamedQuery("Customer.findCustomer")
+        Customer customer = (Customer) em.createNamedQuery("Customer.findByUsername")
                 .setParameter("username", username)
                 .getSingleResult();
         Cryptocurrency cryptocurrency = (Cryptocurrency) em.createNamedQuery("Cryptocurrency.find")
@@ -79,13 +79,7 @@ public class OrderFacadeREST extends AbstractFacade<Order> {
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response find(@PathParam("id") Integer id) {
-        Order order = super.find(id);
-        
-        Customer customer = order.getCustomer();
-        Customer customerWithoutPasswd = new Customer(customer.getId(), customer.getName(), customer.getEmail(), customer.getPhone());
-        Order orderWithoutPasswd = new Order(order.getId(), order.getDatePurchase(), order.getAmount(), customerWithoutPasswd, order.getCryptocurrency());
-        
-        return Response.ok().entity(orderWithoutPasswd).build();
+        return Response.ok().entity(super.find(id)).build();
     }
 
     @GET

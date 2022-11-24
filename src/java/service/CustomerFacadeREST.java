@@ -17,7 +17,6 @@ import model.entities.Customer;
 import authn.Secured;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.GenericEntity;
-import java.util.ArrayList;
 
 @Stateless
 @Path("customer")
@@ -48,7 +47,7 @@ public class CustomerFacadeREST extends AbstractFacade<Customer> {
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Long id) {
+    public void remove(@PathParam("id") Integer id) {
         super.remove(super.find(id));
     }
 
@@ -56,26 +55,14 @@ public class CustomerFacadeREST extends AbstractFacade<Customer> {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response findWithoutPasswd(@PathParam("id") Integer id) {
-        Customer customer = super.find(id);
-        
-        Customer customerWithoutPasswd = new Customer(customer.getId(), customer.getName(), customer.getEmail(), customer.getPhone());
-        
-        return Response.ok().entity(customerWithoutPasswd).build();
+    public Response find(@PathParam("id") Integer id) {                
+        return Response.ok().entity(super.find(id)).build();
     }
 
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response findAllWithoutPasswd() {
-        List<Customer> customers = super.findAll();
-        
-        List<Customer> customersWithoutPasswd = new ArrayList();
-        Customer customerWithoutPasswd;
-        for (Customer customer : customers) {
-            customerWithoutPasswd = new Customer(customer.getId(), customer.getName(), customer.getEmail(), customer.getPhone());
-            customersWithoutPasswd.add(customerWithoutPasswd);
-        }
-        final GenericEntity<List<Customer>> gCustomers = new GenericEntity<List<Customer>>(customersWithoutPasswd) {};
+        final GenericEntity<List<Customer>> gCustomers = new GenericEntity<List<Customer>>(super.findAll()) {};
         return Response.ok().entity(gCustomers).build();
     }
 
