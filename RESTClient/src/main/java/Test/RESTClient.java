@@ -4,6 +4,7 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -33,16 +34,17 @@ public class RESTClient {
         return resource.request(MediaType.APPLICATION_XML).get();
     }
     
-     /*Com es podrien pasar les credencials sense el Header Authorization??
+    //Com es podrien pasar les credencials sense el Header Authorization??
     public Response postCrypto(Integer idCrypto, Integer amount, Integer idOrder) throws ClientErrorException {
          WebTarget resource = webTarget.path("order").queryParam("cryptocurrency", idCrypto);
          String postOrder = "<order>"
                  + "<amount>"+amount+"</amount>"
                  + "<id>"+idOrder+"</id>"
                  + "</order>";
-         return resource.request().post(Entity.entity(postOrder, MediaType.APPLICATION_XML), Response.class);
+         String credentials = "c29iOnNvYgo=";
+         return resource.request().header(HttpHeaders.AUTHORIZATION, "Basic " + credentials).post(Entity.entity(postOrder, MediaType.APPLICATION_XML), Response.class);
     }
-    */
+    
     public Response getCustomers() throws ClientErrorException {
         WebTarget resource = webTarget.path("customer");
         return resource.request(MediaType.APPLICATION_XML).get();
@@ -82,8 +84,8 @@ public class RESTClient {
         System.out.println("Get cryptocurrency by order: " + responseGetCryptoByOrder.readEntity(String.class) + ",  Status: " + responseGetCryptoByOrder.getStatus());
         
         //POST /rest/api/v1/order?cryptocurrency=${id}
-        //Response responsePostCrypto = client.postCrypto(1,500, 70);
-        //System.out.println("Post crypto: " + responsePostCrypto.readEntity(String.class) + ",  Status: " + responsePostCrypto.getStatus());
+        Response responsePostCrypto = client.postCrypto(1,500, 70);
+        System.out.println("Post crypto: " + responsePostCrypto.readEntity(String.class) + ",  Status: " + responsePostCrypto.getStatus());
         
         //GET /rest/api/v1/order/${id}
         Response responseGetOrderbyId = client.getOrderbyId(1);
