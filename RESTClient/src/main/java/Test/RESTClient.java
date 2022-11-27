@@ -13,6 +13,7 @@ public class RESTClient {
     private final WebTarget webTarget;
     private final Client client;
     private static final String BASE_URI = "http://localhost:8080/SO-API_REST/rest/api/v1/";
+    private final String credentials = "c29iOnNvYgo=";
 
     public RESTClient() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
@@ -31,7 +32,7 @@ public class RESTClient {
     
     public Response getOrderbyId(Integer id) throws ClientErrorException {
         WebTarget resource = webTarget.path("order").path(String.valueOf(id));
-        return resource.request(MediaType.APPLICATION_XML).get();
+        return resource.request(MediaType.APPLICATION_XML).header(HttpHeaders.AUTHORIZATION, "Basic " + credentials).get();
     }
     
     //Com es podrien pasar les credencials sense el Header Authorization??
@@ -41,7 +42,6 @@ public class RESTClient {
                  + "<amount>"+amount+"</amount>"
                  + "<id>"+idOrder+"</id>"
                  + "</order>";
-         String credentials = "c29iOnNvYgo=";
          return resource.request().header(HttpHeaders.AUTHORIZATION, "Basic " + credentials).post(Entity.entity(postOrder, MediaType.APPLICATION_XML), Response.class);
     }
     
@@ -64,7 +64,7 @@ public class RESTClient {
                  + "<phone>"+phone+"</phone>"
                  + "</customer>";
                  
-         return resource.request().put(Entity.entity(updateCustomer, MediaType.APPLICATION_XML), Response.class);
+         return resource.request().header(HttpHeaders.AUTHORIZATION, "Basic " + credentials).put(Entity.entity(updateCustomer, MediaType.APPLICATION_XML), Response.class);
     }
      
 
