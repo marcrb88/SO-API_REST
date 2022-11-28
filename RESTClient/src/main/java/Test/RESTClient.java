@@ -13,7 +13,7 @@ public class RESTClient {
     private final WebTarget webTarget;
     private final Client client;
     private static final String BASE_URI = "http://localhost:8080/SO-API_REST/rest/api/v1/";
-    private final String credentials = "c29iOnNvYgo=";
+    private final String credentials = "c29iOnNvYg==";
 
     public RESTClient() {
         client = javax.ws.rs.client.ClientBuilder.newClient();

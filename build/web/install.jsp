@@ -26,7 +26,7 @@
              * 
              * If there is any problem, it will exit at the very first error.
              */
-            String dbname = "homework1";
+            String dbname = "sob_grup_09";
             String schema = "ROOT";
             Class.forName("org.apache.derby.jdbc.ClientDriver");
             /* this will generate database if not exist */
@@ -40,8 +40,8 @@
                 "INSERT INTO " + schema + ".CUSTOMER VALUES (NEXT VALUE FOR CUSTOMER_GEN, 'marc.roige@estudiants.urv.cat', 'Marc', '666123456')",
                 "INSERT INTO " + schema + ".CREDENTIALS VALUES (NEXT VALUE FOR CREDENTIALS_GEN, 'sob', 1)",
                 "INSERT INTO " + schema + ".CREDENTIALS VALUES (NEXT VALUE FOR CREDENTIALS_GEN, '1234', 2)",
-                "INSERT INTO " + schema + ".CRYPTOCURRENCY VALUES (NEXT VALUE FOR CRYPTOCURRENCY_GEN, 'ta weno', 1170.9, '2014-07-02 06:14:00.742000000', 'etherium')",
-                "INSERT INTO " + schema + ".CRYPTOCURRENCY VALUES (NEXT VALUE FOR CRYPTOCURRENCY_GEN, 'ta weno', 16135.36, '2014-07-02 06:14:00.742000000', 'bitcoin')",
+                "INSERT INTO " + schema + ".CRYPTOCURRENCY VALUES (NEXT VALUE FOR CRYPTOCURRENCY_GEN, 'S''utilitza principalment per pagar comissions de transacció i la creació de contractes intel·ligents de blockchain', 1170.9, '2014-07-02 06:14:00.742000000', 'etherium')",
+                "INSERT INTO " + schema + ".CRYPTOCURRENCY VALUES (NEXT VALUE FOR CRYPTOCURRENCY_GEN, 'S''utilitza per adquirir productes i serveis', 16135.36, '2014-07-02 06:14:00.742000000', 'bitcoin')",
                 "INSERT INTO " + schema + ".PURCHASE VALUES (NEXT VALUE FOR ORDER_GEN, 0.25, '2014-07-02 06:14:00.742000000', 1, 1)"
             };
             for (String datum : data) {

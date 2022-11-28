@@ -30,7 +30,7 @@ public class Cryptocurrency implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Cryptocurrency_Gen")
     private int id;
 
-    //@Column(unique=true)
+    @Column(unique=true)
     @NotNull(message="Coin name can't be null")
     private String name;
     

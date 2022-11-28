@@ -3,7 +3,7 @@
       
     <persistence-unit name="Homework1PU" transaction-type="JTA">
             
-        <jta-data-source>java:app/jdbc/homework1</jta-data-source>
+        <jta-data-source>java:app/jdbc/sob_grup_09</jta-data-source>
             
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
             
