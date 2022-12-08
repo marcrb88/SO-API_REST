@@ -15,7 +15,7 @@ import java.util.Date;
 
 @Entity
 @NamedQuery(name = "Order.findByCryptocurrency",
-        query = "SELECT o FROM Order o WHERE o.cryptocurrency.id = :cryptocurrency_id")
+        query = "SELECT o FROM Order o WHERE o.cryptocurrency.id = :cryptocurrency_id ORDER BY o.id DESC")
 @XmlRootElement
 @Table(name="PURCHASE")
 public class Order implements Serializable {
@@ -31,6 +31,8 @@ public class Order implements Serializable {
     
     @NotNull(message="Amount can't be null")
     private float amount;
+    
+    private float euros;
     
     @NotNull(message="Client can't be null")
     @ManyToOne
@@ -75,6 +77,14 @@ public class Order implements Serializable {
         this.amount = amount;
     }
 
+    public float getEuros() {
+        return euros;
+    }
+
+    public void setEuros(float euros) {
+        this.euros = euros;
+    }
+    
     public Customer getCustomer() {
         return customer;
     }

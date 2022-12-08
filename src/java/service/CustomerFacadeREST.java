@@ -15,8 +15,12 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import model.entities.Customer;
 import authn.Secured;
+import com.sun.xml.messaging.saaj.util.Base64;
+import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.GenericEntity;
+import java.util.StringTokenizer;
+import model.entities.ErrorMessage;
 
 @Stateless
 @Path("customer")
@@ -40,9 +44,20 @@ public class CustomerFacadeREST extends AbstractFacade<Customer> {
     @Secured
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public void edit(@PathParam("id") Integer id, Customer entity) {
+    public Response edit(@PathParam("id") Integer id, Customer entity, @HeaderParam("Authorization") String credentials) {
+        String decode = Base64.base64Decode(credentials.replace("Basic ", ""));
+        StringTokenizer tokenizer = new StringTokenizer(decode, ":");
+        String username = tokenizer.nextToken();
+        
+        Customer customer = (Customer) em.createNamedQuery("Customer.findByUsername")
+                .setParameter("username", username)
+                .getSingleResult();
+        if (id != customer.getId()) {
+            return Response.status(Response.Status.FORBIDDEN).entity(new ErrorMessage("No pots editar un altre usuari")).build();
+        }
         entity.setId(id);
         super.edit(entity);
+        return Response.ok().build();
     }
 
     @DELETE
@@ -51,19 +66,25 @@ public class CustomerFacadeREST extends AbstractFacade<Customer> {
         super.remove(super.find(id));
     }
 
-    
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response find(@PathParam("id") Integer id) {                
-        return Response.ok().entity(super.find(id)).build();
+    public Response find(@PathParam("id") Integer id) {
+        Customer customer = super.find(id);
+        if (customer == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("No existeix l'usuari amb id " + id)).build();
+        }
+        return Response.ok().entity(customer).build();
     }
 
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response findAllWithoutPasswd() {
-        final GenericEntity<List<Customer>> gCustomers = new GenericEntity<List<Customer>>(super.findAll()) {};
-        return Response.ok().entity(gCustomers).build();
+        List<Customer> resultList = super.findAll();
+        if (resultList.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("No existeixen usuaris")).build();
+        }
+        return Response.ok().entity(new GenericEntity<List<Customer>>(resultList) {}).build();
     }
 
     @GET

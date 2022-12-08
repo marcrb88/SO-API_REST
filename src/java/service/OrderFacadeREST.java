@@ -16,6 +16,7 @@ import jakarta.ws.rs.core.MediaType;
 import model.entities.Order;
 import authn.Secured;
 import com.sun.xml.messaging.saaj.util.Base64;
+import jakarta.persistence.NoResultException;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
@@ -23,6 +24,7 @@ import java.util.Date;
 import java.util.StringTokenizer;
 import model.entities.Cryptocurrency;
 import model.entities.Customer;
+import model.entities.ErrorMessage;
 
 @Stateless
 @Path("order")
@@ -37,28 +39,32 @@ public class OrderFacadeREST extends AbstractFacade<Order> {
 
     @POST
     @Secured
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces(MediaType.TEXT_PLAIN)
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response create(@QueryParam("cryptocurrency") int id_cryptocurrency, Order entity, @HeaderParam("Authorization") String credentials) {
-        String decode = Base64.base64Decode(credentials.replace("Basic ", ""));
-        StringTokenizer tokenizer = new StringTokenizer(decode, ":");
-        String username = tokenizer.nextToken();
-        
-        Customer customer = (Customer) em.createNamedQuery("Customer.findByUsername")
-                .setParameter("username", username)
-                .getSingleResult();
-        Cryptocurrency cryptocurrency = (Cryptocurrency) em.createNamedQuery("Cryptocurrency.find")
-                .setParameter("id_cryptocurrency", id_cryptocurrency)
-                .getSingleResult();
-        
-        entity.setCustomer(customer);
-        entity.setCryptocurrency(cryptocurrency);
-        entity.setDatePurchase(new Date());
-        
-        super.create(entity);
-        
-        float preu = entity.getAmount() * cryptocurrency.getLastQuote();
-        return Response.ok().entity("Comanda amb id " + entity.getId() + " amb preu " + preu + " amb data " + entity.getDatePurchase()).build();
+        try {
+            String decode = Base64.base64Decode(credentials.replace("Basic ", ""));
+            StringTokenizer tokenizer = new StringTokenizer(decode, ":");
+            String username = tokenizer.nextToken();
+
+            Customer customer = (Customer) em.createNamedQuery("Customer.findByUsername")
+                    .setParameter("username", username)
+                    .getSingleResult();
+            Cryptocurrency cryptocurrency = (Cryptocurrency) em.createNamedQuery("Cryptocurrency.find")
+                    .setParameter("id_cryptocurrency", id_cryptocurrency)
+                    .getSingleResult();
+
+            entity.setCustomer(customer);
+            entity.setCryptocurrency(cryptocurrency);
+            entity.setDatePurchase(new Date());
+            entity.setEuros(entity.getAmount() * cryptocurrency.getLastQuote());
+
+            super.create(entity);
+
+            return Response.status(Response.Status.CREATED).entity(entity).build();
+        } catch (NoResultException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("No existeix la crypto amb id " + id_cryptocurrency)).build();
+        }
     }
 
     @PUT
@@ -79,7 +85,11 @@ public class OrderFacadeREST extends AbstractFacade<Order> {
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response find(@PathParam("id") Integer id) {
-        return Response.ok().entity(super.find(id)).build();
+        Order order = super.find(id);
+        if (order == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("No existeix la compra amb id " + id)).build();
+        }
+        return Response.ok().entity(order).build();
     }
 
     @GET

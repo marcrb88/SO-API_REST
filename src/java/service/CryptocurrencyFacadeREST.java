@@ -3,6 +3,7 @@ package service;
 import java.util.List;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -17,6 +18,7 @@ import model.entities.Cryptocurrency;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.GenericEntity;
 import jakarta.ws.rs.core.Response;
+import model.entities.ErrorMessage;
 import model.entities.Order;
 
 @Stateless
@@ -54,17 +56,20 @@ public class CryptocurrencyFacadeREST extends AbstractFacade<Cryptocurrency> {
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response find(@PathParam("id") Integer id) {
-        List<Order> orders = (List<Order>) em.createNamedQuery("Order.findByCryptocurrency")
-                .setParameter("cryptocurrency_id", id)
-                .getResultList();
-        Order order = orders.get(orders.size()-1);
-        
-        return Response.ok().entity(order).build();
+        try {
+            Order order = (Order) em.createNamedQuery("Order.findByCryptocurrency")
+                    .setParameter("cryptocurrency_id", id)
+                    .setMaxResults(1)
+                    .getSingleResult();
+            return Response.ok().entity(order).build();
+        } catch (NoResultException e){
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("No existeix la cryptomoneda amb id " + id)).build();
+        }
     }
    
 
     @GET
-    @Produces({MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response findAll(@QueryParam("order") String order) {
         if (order == null){
             order = "desc";
@@ -76,10 +81,13 @@ public class CryptocurrencyFacadeREST extends AbstractFacade<Cryptocurrency> {
             } else {
                 cryptocurrencies = em.createNamedQuery("Cryptocurrency.findAllDESC").getResultList();
             }
+            if (cryptocurrencies.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("No existeixen cryptomonedes")).build();
+            }
             final GenericEntity<List<Cryptocurrency>> gCryptocurrencies = new GenericEntity<List<Cryptocurrency>>(cryptocurrencies) {};
             return Response.ok().entity(gCryptocurrencies).build();
         }
-        return Response.status(Response.Status.BAD_REQUEST).entity("El valor del parametre order es invalid").build();
+        return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("El valor del parametre order es invalid")).build();
     }
 
     @GET
