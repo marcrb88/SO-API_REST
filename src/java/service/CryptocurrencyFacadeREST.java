@@ -53,7 +53,7 @@ public class CryptocurrencyFacadeREST extends AbstractFacade<Cryptocurrency> {
     }
 
     @GET
-    @Path("{id}")
+    @Path("{id}/order")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response find(@PathParam("id") Integer id) {
         try {
@@ -66,8 +66,21 @@ public class CryptocurrencyFacadeREST extends AbstractFacade<Cryptocurrency> {
             return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("No existeix la cryptomoneda amb id " + id)).build();
         }
     }
-   
-
+    
+    @GET
+    @Path("{id}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response findCryptocurrency(@PathParam("id") Integer id) {
+        try {
+           Cryptocurrency crypto = super.find(id);
+            return Response.ok().entity(crypto).build();
+        } catch (NoResultException e){
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("No existeix la cryptomoneda amb id " + id)).build();
+        }
+    }
+    
+    
+ 
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response findAll(@QueryParam("order") String order) {

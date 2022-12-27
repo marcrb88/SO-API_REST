@@ -42,7 +42,7 @@
                 "INSERT INTO " + schema + ".CREDENTIALS VALUES (NEXT VALUE FOR CREDENTIALS_GEN, '1234', 2)",
                 "INSERT INTO " + schema + ".CRYPTOCURRENCY VALUES (NEXT VALUE FOR CRYPTOCURRENCY_GEN, 'S''utilitza principalment per pagar comissions de transacció i la creació de contractes intel·ligents de blockchain', 1170.9, '2014-07-02 06:14:00.742000000', 'etherium')",
                 "INSERT INTO " + schema + ".CRYPTOCURRENCY VALUES (NEXT VALUE FOR CRYPTOCURRENCY_GEN, 'S''utilitza per adquirir productes i serveis', 16135.36, '2014-07-02 06:14:00.742000000', 'bitcoin')",
-                "INSERT INTO " + schema + ".PURCHASE VALUES (NEXT VALUE FOR ORDER_GEN, 0.25, '2014-07-02 06:14:00.742000000', 2927.25, 1, 1)"
+                //"INSERT INTO " + schema + ".PURCHASE VALUES (NEXT VALUE FOR ORDER_GEN, 0.25, '2014-07-02 06:14:00.742000000', 2927.25, 1, 1)"
             };
             for (String datum : data) {
                 if (stmt.executeUpdate(datum)<=0) {
