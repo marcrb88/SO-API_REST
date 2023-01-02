@@ -15,7 +15,6 @@ public class RESTappV1 extends Application {
         classes.add(CustomerFacadeREST.class);
         classes.add(OrderFacadeREST.class);
         classes.add(RESTRequestFilter.class);
-        classes.add(CredentialsFacadeREST.class);
         return classes;
     }
 }

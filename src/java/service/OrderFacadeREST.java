@@ -38,7 +38,7 @@ public class OrderFacadeREST extends AbstractFacade<Order> {
     }
 
     @POST
-    //@Secured
+    @Secured
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response create(@QueryParam("cryptocurrency") int id_cryptocurrency, Order entity, @HeaderParam("Authorization") String credentials) {

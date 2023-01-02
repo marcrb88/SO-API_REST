@@ -7,7 +7,7 @@ import model.entities.Customer;
 
 @Entity
 @NamedQuery(name="Credentials.findByCustomer", 
-            query="SELECT c FROM Credentials c WHERE c.password = :password AND c.customer.name = :username")
+            query="SELECT c FROM Credentials c WHERE c.customer.id = :customer_id")
 @XmlRootElement
 public class Credentials implements Serializable { 
     @Id

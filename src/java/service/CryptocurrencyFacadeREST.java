@@ -55,15 +55,15 @@ public class CryptocurrencyFacadeREST extends AbstractFacade<Cryptocurrency> {
     @GET
     @Path("{id}/order")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response find(@PathParam("id") Integer id) {
+    public Response findOrders(@PathParam("id") Integer id) {
         try {
-            Order order = (Order) em.createNamedQuery("Order.findByCryptocurrency")
+            List<Order> orders = (List<Order>) em.createNamedQuery("Order.findByCryptocurrency")
                     .setParameter("cryptocurrency_id", id)
-                    .setMaxResults(1)
-                    .getSingleResult();
-            return Response.ok().entity(order).build();
+                    .getResultList();
+            final GenericEntity<List<Order>> gOrders = new GenericEntity<List<Order>>(orders) {};
+            return Response.ok().entity(gOrders).build();
         } catch (NoResultException e){
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("No existeix la cryptomoneda amb id " + id)).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("No existeix cap compra amb la cryptomoneda amb id " + id)).build();
         }
     }
     

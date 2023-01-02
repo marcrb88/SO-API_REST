@@ -1,5 +1,6 @@
 package service;
 
+import authn.Credentials;
 import java.util.List;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -21,6 +22,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.GenericEntity;
 import java.util.StringTokenizer;
 import model.entities.ErrorMessage;
+import model.entities.Login;
 
 @Stateless
 @Path("customer")
@@ -74,6 +76,25 @@ public class CustomerFacadeREST extends AbstractFacade<Customer> {
         if (customer == null) {
             return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("No existeix l'usuari amb id " + id)).build();
         }
+        return Response.ok().entity(customer).build();
+    }
+    
+    @POST
+    @Path("login")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response login(Login login) {
+        
+        Customer customer = em.createNamedQuery("Customer.findByUsername", Customer.class)
+                .setParameter("username", login.getUsername())
+                .getSingleResult();
+        Credentials credentials = (Credentials) em.createNamedQuery("Credentials.findByCustomer")
+                .setParameter("customer_id", customer.getId())
+                .getSingleResult();
+        if(!credentials.getPassword().equals(login.getPassword())) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+ 
         return Response.ok().entity(customer).build();
     }
 
