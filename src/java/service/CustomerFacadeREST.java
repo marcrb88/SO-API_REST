@@ -17,12 +17,14 @@ import jakarta.ws.rs.core.MediaType;
 import model.entities.Customer;
 import authn.Secured;
 import com.sun.xml.messaging.saaj.util.Base64;
+import jakarta.persistence.NoResultException;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.GenericEntity;
 import java.util.StringTokenizer;
 import model.entities.ErrorMessage;
 import model.entities.Login;
+import model.entities.Register;
 
 @Stateless
 @Path("customer")
@@ -96,6 +98,36 @@ public class CustomerFacadeREST extends AbstractFacade<Customer> {
         }
  
         return Response.ok().entity(customer).build();
+    }
+    
+    @POST
+    @Path("register")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response register(Register register) {
+                
+        try {
+            em.createNamedQuery("Customer.findByUsername", Customer.class)
+                .setParameter("username", register.getUsername())
+                .getSingleResult();
+        
+        return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage("Ja existeix aquest usuari")).build();
+        } catch (NoResultException e) {
+            Customer customer = new Customer();
+            customer.setName(register.getName());
+            customer.setEmail(register.getUsername());
+            customer.setPhone(register.getPhone());
+            
+            super.create(customer);
+            
+            Credentials credentials = new Credentials();
+            credentials.setCustomer(customer);
+            credentials.setPassword(register.getPassword());
+            
+            getEntityManager().persist(credentials);
+                        
+            return Response.ok().entity(customer).build();
+        }
     }
 
     @GET
